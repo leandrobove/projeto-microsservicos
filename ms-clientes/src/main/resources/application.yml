@@ -1,6 +1,23 @@
 spring:
   application:
     name: ms-clientes
+    
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clientes-db
+    username: admin
+    password: 123456
+    
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    
+    hibernate:
+      ddl-auto: create
+      
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
 
 server:
   port: 0

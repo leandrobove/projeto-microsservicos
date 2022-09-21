@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  clientes-db:
+    image: postgres:11
+    container_name: clientes-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=clientes-db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123456
+    networks:
+      - ms-network
+
+
+networks:
+  ms-network:
+    driver: bridge
