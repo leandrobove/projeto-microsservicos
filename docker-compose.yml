@@ -13,6 +13,18 @@ services:
     networks:
       - ms-network
 
+  cartoes-db:
+    image: postgres:11
+    container_name: cartoes-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=cartoes-db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123456
+    networks:
+      - ms-network
+
 
 networks:
   ms-network:
