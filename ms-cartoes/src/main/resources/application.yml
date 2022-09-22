@@ -7,10 +7,6 @@ spring:
     username: admin
     password: 123456
     
-  sql:
-    init:
-      mode: always
-    
   jpa:
     show-sql: true
     generate-ddl: true

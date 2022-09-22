@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,12 +22,11 @@ import lombok.Setter;
 @Getter
 @Setter
 
-@SequenceGenerator(name = "clientes", sequenceName = "SEQ_CLIENTES", initialValue = 1)
 @Entity
 public class Cliente {
 
 	@Id
-	@GeneratedValue(generator = "clientes", strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;
 

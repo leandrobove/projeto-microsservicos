@@ -9,7 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,12 +24,11 @@ import lombok.Setter;
 @Getter
 @Setter
 
-@SequenceGenerator(name = "cartoes", sequenceName = "SEQ_CARTOES", initialValue = 1)
 @Entity
 public class Cartao {
 
 	@Id
-	@GeneratedValue(generator = "cartoes", strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;
 
