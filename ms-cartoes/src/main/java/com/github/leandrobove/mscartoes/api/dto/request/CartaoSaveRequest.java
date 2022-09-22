@@ -1,4 +1,4 @@
-package com.github.leandrobove.mscartoes.api.dto;
+package com.github.leandrobove.mscartoes.api.dto.request;
 
 import java.math.BigDecimal;
 
