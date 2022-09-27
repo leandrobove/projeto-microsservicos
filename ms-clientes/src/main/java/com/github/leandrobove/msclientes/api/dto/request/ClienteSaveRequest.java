@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -20,6 +21,7 @@ public class ClienteSaveRequest {
 	
 	@NotBlank
 	@CPF
+	@Pattern(regexp = "(^\\d{11}$)")
 	private String cpf;
 	
 	@NotNull
