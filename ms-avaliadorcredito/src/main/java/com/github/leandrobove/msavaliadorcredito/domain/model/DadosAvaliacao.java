@@ -3,12 +3,9 @@ package com.github.leandrobove.msavaliadorcredito.domain.model;
 import lombok.Data;
 
 @Data
-public class Cliente {
+public class DadosAvaliacao {
 
-	private Long id;
+	private String cpf;
 
-	private String nome;
-	
-	private Integer idade;
-
+	private Long renda;
 }
