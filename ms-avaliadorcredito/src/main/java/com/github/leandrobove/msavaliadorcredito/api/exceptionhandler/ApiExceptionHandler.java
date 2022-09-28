@@ -50,8 +50,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
 
-		body = Problem.builder().timestamp(OffsetDateTime.now()).message(MSG_ERRO_GENERICA_USUARIO_FINAL)
-				.status(status.value()).build();
+		if (body == null) {
+			body = Problem.builder().timestamp(OffsetDateTime.now()).message(status.getReasonPhrase())
+					.status(status.value()).build();
+		} else if (body instanceof String) {
+			body = Problem.builder().timestamp(OffsetDateTime.now()).message((String) body).status(status.value())
+					.build();
+		}
 
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
