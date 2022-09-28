@@ -1,11 +1,19 @@
 package com.github.leandrobove.msavaliadorcredito.api.exceptionhandler;
 
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -18,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. "
 			+ "Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
@@ -59,6 +70,38 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 
 		return super.handleExceptionInternal(ex, body, headers, status, request);
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		return this.handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+	}
+	
+	private ResponseEntity<Object> handleValidationInternal(Exception ex, HttpHeaders headers, HttpStatus status,
+			WebRequest request, BindingResult bindingResult) {
+
+		// Mensagem personalizada com mais de um campo
+		List<FieldError> campos = bindingResult.getFieldErrors();
+		
+		List<FieldProblem> problemFields = campos.stream()
+				.map( (fieldError) -> {
+					
+					String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+					
+					return FieldProblem.builder()
+						.name(fieldError.getField())
+						.message(message)
+						.build();
+				})
+				.collect(Collectors.toList());
+
+		String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
+		
+		Problem problem = createProblemBuilder(status, detail).fields(problemFields).message(detail).build();
+
+		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
 	private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, String detail) {

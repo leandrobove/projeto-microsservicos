@@ -21,7 +21,7 @@ public class ClienteSaveRequest {
 	
 	@NotBlank
 	@CPF
-	@Pattern(regexp = "(^\\d{11}$)")
+	@Pattern(regexp = "(^\\d{11}$)", message = "deve conter números somente números")
 	private String cpf;
 	
 	@NotNull

@@ -1,5 +1,7 @@
 package com.github.leandrobove.msavaliadorcredito.api.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +33,7 @@ public class AvaliadorCreditoController {
 	}
 
 	@PostMapping
-	public RetornoAvaliacaoCliente realizarAvaliacao(@RequestBody DadosAvaliacao dadosAvaliacao) {
+	public RetornoAvaliacaoCliente realizarAvaliacao(@RequestBody @Valid DadosAvaliacao dadosAvaliacao) {
 		return avaliadorCreditoService.realizarAvaliacao(dadosAvaliacao.getCpf(), dadosAvaliacao.getRenda());
 	}
 }
