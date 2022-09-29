@@ -36,4 +36,5 @@ public class AvaliadorCreditoController {
 	public RetornoAvaliacaoCliente realizarAvaliacao(@RequestBody @Valid DadosAvaliacao dadosAvaliacao) {
 		return avaliadorCreditoService.realizarAvaliacao(dadosAvaliacao.getCpf(), dadosAvaliacao.getRenda());
 	}
+	
 }

@@ -2,6 +2,7 @@ package com.github.leandrobove.msavaliadorcredito.domain.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -9,14 +10,18 @@ import org.springframework.stereotype.Service;
 
 import com.github.leandrobove.msavaliadorcredito.api.exceptions.ClienteNaoEncontradoException;
 import com.github.leandrobove.msavaliadorcredito.api.exceptions.ErroComunicacaoMicrosservicosException;
+import com.github.leandrobove.msavaliadorcredito.domain.exceptions.ErroSolicitacaoEmissaoCartaoException;
 import com.github.leandrobove.msavaliadorcredito.domain.model.Cartao;
 import com.github.leandrobove.msavaliadorcredito.domain.model.CartaoAprovado;
 import com.github.leandrobove.msavaliadorcredito.domain.model.CartaoCliente;
 import com.github.leandrobove.msavaliadorcredito.domain.model.Cliente;
+import com.github.leandrobove.msavaliadorcredito.domain.model.DadosSolicitacaoEmissaoCartao;
+import com.github.leandrobove.msavaliadorcredito.domain.model.ProtocoloSolicitacaoCartao;
 import com.github.leandrobove.msavaliadorcredito.domain.model.RetornoAvaliacaoCliente;
 import com.github.leandrobove.msavaliadorcredito.domain.model.SituacaoCliente;
 import com.github.leandrobove.msavaliadorcredito.infrastructure.clients.CartoesOpenFeignClient;
 import com.github.leandrobove.msavaliadorcredito.infrastructure.clients.ClienteOpenFeignClient;
+import com.github.leandrobove.msavaliadorcredito.infrastructure.mqueue.EmissaoCartaoProducer;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +33,7 @@ public class AvaliadorCreditoService {
 
 	private final ClienteOpenFeignClient clientesOpenFeignClient;
 	private final CartoesOpenFeignClient cartoesOpenFeignClient;
+	private final EmissaoCartaoProducer emissaoCartaoProducer;
 
 	public SituacaoCliente getSituacaoCliente(String cpf) {
 
@@ -77,6 +83,21 @@ public class AvaliadorCreditoService {
 			}
 			
 			throw new ErroComunicacaoMicrosservicosException(e.getMessage(), e.status());
+		}
+	}
+	
+	public ProtocoloSolicitacaoCartao solicitarEmissaoCartao(DadosSolicitacaoEmissaoCartao dadosSolicitacaoEmissaoCartao) {
+		try {
+			//enviar msg para o broker
+			emissaoCartaoProducer.solicitarCartao(dadosSolicitacaoEmissaoCartao);
+			
+			//retornar protocolo de solicitação
+			var protocoloGerado = UUID.randomUUID().toString();
+			
+			return new ProtocoloSolicitacaoCartao(protocoloGerado);
+			
+		} catch (Exception e) {
+			throw new ErroSolicitacaoEmissaoCartaoException(e.getMessage());
 		}
 	}
 	
