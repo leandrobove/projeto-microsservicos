@@ -34,7 +34,7 @@ public class ClienteCartao {
 	private String cpf;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_cartao")
+	@JoinColumn(name = "id_cartao", unique = true)
 	private Cartao cartao;
 	
 	private BigDecimal limite;
