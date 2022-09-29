@@ -25,6 +25,18 @@ services:
     networks:
       - ms-network
 
+  messages-rabbitmq:
+    image: rabbitmq:3.10.5-management
+    container_name: cursorabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - ms-network
+
 
 networks:
   ms-network:
