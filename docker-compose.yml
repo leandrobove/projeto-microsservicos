@@ -37,6 +37,18 @@ services:
     networks:
       - ms-network
 
+  auth-keycloak:
+    image: quay.io/keycloak/keycloak:19.0.2
+    container_name: auth-keycloak
+    environment:
+      - "KEYCLOAK_ADMIN=admin"
+      - "KEYCLOAK_ADMIN_PASSWORD=123456"
+    command:
+      - start-dev
+    ports:
+      - "8081:8080"
+    networks:
+      - ms-network
 
 networks:
   ms-network:
